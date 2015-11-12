@@ -1,0 +1,28 @@
+{
+    "name": "react-native-file",
+        "version": "1.0.0",
+        "description": "A file for react-native",
+        "main": "index.js",
+        "author": {
+            "name": "YunJiang.Fang",
+            "email": "42550564@qq.com"
+        },
+        "license": "MIT",
+        "keywords": [
+            "react-native",
+            "react-component",
+            "ios",
+            "android",
+            "file",
+            "remobile",
+            "mobile"
+        ],
+        "homepage": "https://github.com/remobile/react-native-file",
+        "bugs": {
+            "url": "https://github.com/remobile/react-native-file/issues"
+        },
+        "repository": {
+            "type": "git",
+            "url": "git://github.com/remobile/react-native-file.git"
+        }
+}
