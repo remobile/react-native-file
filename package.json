@@ -1,7 +1,7 @@
 {
     "name": "react-native-file",
         "version": "1.0.0",
-        "description": "A file for react-native",
+        "description": "A cordova file for react-native, supprt for ios and android",
         "main": "index.js",
         "author": {
             "name": "YunJiang.Fang",
@@ -14,6 +14,13 @@
             "ios",
             "android",
             "file",
+            "fs",
+            "read",
+            "write",
+            "requestFileSystem",
+            "LocalFileSystem",
+            "FileReader",
+            "FileWriter",
             "remobile",
             "mobile"
         ],
