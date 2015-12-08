@@ -20,9 +20,8 @@
 */
 
 var exec = require('@remobile/react-native-cordova').exec;
-var channel = require('@remobile/react-native-cordova').channel;
 
-exports.file = {
+var file = {
     // Read-only directory where the application is installed.
     applicationDirectory: null,
     // Root of app's private writable storage
@@ -50,13 +49,10 @@ exports.file = {
     sharedDirectory: null
 };
 
-channel.waitForInitialization('onFileSystemPathsReady');
-channel.onCordovaReady.subscribe(function() {
-    function after(paths) {
-        for (var k in paths) {
-            exports.file[k] = paths[k];
-        }
-        channel.initializationComplete('onFileSystemPathsReady');
+function after(paths) {
+    for (var k in paths) {
+        file[k] = paths[k];
     }
-    exec(after, null, 'File', 'requestAllPaths', []);
-});
+}
+exec(after, null, 'File', 'requestAllPaths', []);
+module.exports = file;

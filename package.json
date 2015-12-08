@@ -1,6 +1,6 @@
 {
     "name": "@remobile/react-native-file",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "description": "A cordova file for react-native, supprt for ios and android",
         "main": "index.js",
         "author": {
@@ -31,5 +31,8 @@
         "repository": {
             "type": "git",
             "url": "git://github.com/remobile/react-native-file.git"
+        },
+        "peerDependencies": {
+            "@remobile/react-native-cordova": "^1.0.6"
         }
 }
