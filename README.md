@@ -14,7 +14,7 @@ npm install @remobile/react-native-file --save
 ```gradle
 ...
 include ':react-native-file'
-project(':react-native-file').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-file/android')
+project(':react-native-file').projectDir = new File(rootProject.projectDir, '../node_modules/@remobile/react-native-file/android')
 ```
 
 * In `android/app/build.gradle`
