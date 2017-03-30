@@ -19,12 +19,11 @@
  *
 */
 
-
-var argscheck = require('@remobile/react-native-cordova').argscheck,
+const argscheck = require('@remobile/react-native-cordova').argscheck,
     FileError = require('./FileError'),
     FileSystem = require('./FileSystem'),
     exec = require('@remobile/react-native-cordova').exec;
-var fileSystems = require('./fileSystems');
+const fileSystems = require('./fileSystems');
 
 /**
  * Request a file system in which to store application data.
@@ -33,9 +32,9 @@ var fileSystems = require('./fileSystems');
  * @param successCallback  invoked with a FileSystem object
  * @param errorCallback  invoked if error occurs retrieving file system
  */
-var requestFileSystem = function(type, size, successCallback, errorCallback) {
+const requestFileSystem = function (type, size, successCallback, errorCallback) {
     argscheck.checkArgs('nnFF', 'requestFileSystem', arguments);
-    var fail = function(code) {
+    const fail = function (code) {
         errorCallback && errorCallback(new FileError(code));
     };
 
@@ -43,10 +42,10 @@ var requestFileSystem = function(type, size, successCallback, errorCallback) {
         fail(FileError.SYNTAX_ERR);
     } else {
         // if successful, return a FileSystem object
-        var success = function(file_system) {
+        const success = function (file_system) {
             if (file_system) {
                 if (successCallback) {
-                    fileSystems.getFs(file_system.name, function(fs) {
+                    fileSystems.getFs(file_system.name, function (fs) {
                         // This should happen only on platforms that haven't implemented requestAllFileSystems (windows)
                         if (!fs) {
                             fs = new FileSystem(file_system.name, file_system.root);
@@ -54,13 +53,12 @@ var requestFileSystem = function(type, size, successCallback, errorCallback) {
                         successCallback(fs);
                     });
                 }
-            }
-            else {
+            } else {
                 // no FileSystem object returned
                 fail(FileError.NOT_FOUND_ERR);
             }
         };
-        exec(success, fail, "File", "requestFileSystem", [type, size]);
+        exec(success, fail, 'File', 'requestFileSystem', [type, size]);
     }
 };
 

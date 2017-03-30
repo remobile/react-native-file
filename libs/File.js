@@ -28,7 +28,7 @@
  * size {Number} size of the file in bytes
  */
 
-var File = function(name, localURL, type, lastModifiedDate, size){
+const File = function (name, localURL, type, lastModifiedDate, size) {
     this.name = name || '';
     this.localURL = localURL || null;
     this.type = type || null;
@@ -49,10 +49,10 @@ var File = function(name, localURL, type, lastModifiedDate, size){
  * start {Number} The index at which to start the slice (inclusive).
  * end {Number} The index at which to end the slice (exclusive).
  */
-File.prototype.slice = function(start, end) {
-    var size = this.end - this.start;
-    var newStart = 0;
-    var newEnd = size;
+File.prototype.slice = function (start, end) {
+    const size = this.end - this.start;
+    let newStart = 0;
+    let newEnd = size;
     if (arguments.length) {
         if (start < 0) {
             newStart = Math.max(size + start, 0);
@@ -69,11 +69,10 @@ File.prototype.slice = function(start, end) {
         }
     }
 
-    var newFile = new File(this.name, this.localURL, this.type, this.lastModified, this.size);
+    const newFile = new File(this.name, this.localURL, this.type, this.lastModified, this.size);
     newFile.start = this.start + newStart;
     newFile.end = this.start + newEnd;
     return newFile;
 };
-
 
 module.exports = File;

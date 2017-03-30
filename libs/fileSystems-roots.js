@@ -20,24 +20,24 @@
 */
 
 // Map of fsName -> FileSystem.
-var fsMap = null;
-var FileSystem = require('./FileSystem');
-var exec = require('@remobile/react-native-cordova').exec;
+let fsMap = null;
+const FileSystem = require('./FileSystem');
+const exec = require('@remobile/react-native-cordova').exec;
 
 // Overridden by Android, BlackBerry 10 and iOS to populate fsMap.
-require('./fileSystems').getFs = function(name, callback) {
+require('./fileSystems').getFs = function (name, callback) {
+    function success (response) {
+        fsMap = {};
+        for (let i = 0; i < response.length; ++i) {
+            const fsRoot = response[i];
+            const fs = new FileSystem(fsRoot.filesystemName, fsRoot);
+            fsMap[fs.name] = fs;
+        }
+        callback(fsMap[name]);
+    }
     if (fsMap) {
         callback(fsMap[name]);
     } else {
-        exec(success, null, "File", "requestAllFileSystems", []);
-        function success(response) {
-            fsMap = {};
-            for (var i = 0; i < response.length; ++i) {
-                var fsRoot = response[i];
-                var fs = new FileSystem(fsRoot.filesystemName, fsRoot);
-                fsMap[fs.name] = fs;
-            }
-            callback(fsMap[name]);
-        }
+        exec(success, null, 'File', 'requestAllFileSystems', []);
     }
 };

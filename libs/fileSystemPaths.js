@@ -19,9 +19,9 @@
  *
 */
 
-var exec = require('@remobile/react-native-cordova').exec;
+const exec = require('@remobile/react-native-cordova').exec;
 
-var file = {
+const file = {
     // Read-only directory where the application is installed.
     applicationDirectory: null,
     // Root of app's private writable storage
@@ -46,11 +46,11 @@ var file = {
     // iOS: Files private to the app, but that are meaningful to other applciations (e.g. Office files)
     documentsDirectory: null,
     // BlackBerry10: Files globally available to all apps
-    sharedDirectory: null
+    sharedDirectory: null,
 };
 
-function after(paths) {
-    for (var k in paths) {
+function after (paths) {
+    for (const k in paths) {
         file[k] = paths[k];
     }
 }

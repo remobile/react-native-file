@@ -19,7 +19,7 @@
  *
 */
 
-var exec = require('@remobile/react-native-cordova').exec,
+const exec = require('@remobile/react-native-cordova').exec,
     utils = require('@remobile/react-native-cordova').utils,
     File = require('./File'),
     FileError = require('./FileError'),
@@ -34,7 +34,7 @@ var exec = require('@remobile/react-native-cordova').exec,
  *      To read from the SD card, the file name is "sdcard/my_file.txt"
  * @constructor
  */
-var FileReader = function() {
+const FileReader = function () {
     this._readyState = 0;
     this._error = null;
     this._result = null;
@@ -47,22 +47,22 @@ FileReader.EMPTY = 0;
 FileReader.LOADING = 1;
 FileReader.DONE = 2;
 
-utils.defineGetter(FileReader.prototype, 'readyState', function() {
+utils.defineGetter(FileReader.prototype, 'readyState', function () {
     return this._localURL ? this._readyState : this._realReader.readyState;
 });
 
-utils.defineGetter(FileReader.prototype, 'error', function() {
-    return this._localURL ? this._error: this._realReader.error;
+utils.defineGetter(FileReader.prototype, 'error', function () {
+    return this._localURL ? this._error : this._realReader.error;
 });
 
-utils.defineGetter(FileReader.prototype, 'result', function() {
-    return this._localURL ? this._result: this._realReader.result;
+utils.defineGetter(FileReader.prototype, 'result', function () {
+    return this._localURL ? this._result : this._realReader.result;
 });
 
-function defineEvent(eventName) {
-    utils.defineGetterSetter(FileReader.prototype, eventName, function() {
+function defineEvent (eventName) {
+    utils.defineGetterSetter(FileReader.prototype, eventName, function () {
         return this._realReader[eventName] || null;
-    }, function(value) {
+    }, function (value) {
         this._realReader[eventName] = value;
     });
 }
@@ -73,10 +73,10 @@ defineEvent('onerror');        // When the read has failed (see errors).
 defineEvent('onloadend');      // When the request has completed (either in success or failure).
 defineEvent('onabort');        // When the read has been aborted. For instance, by invoking the abort() method.
 
-function initRead(reader, file) {
+function initRead (reader, file) {
     // Already loading something
     if (reader.readyState == FileReader.LOADING) {
-      throw new FileError(FileError.INVALID_STATE_ERR);
+        throw new FileError(FileError.INVALID_STATE_ERR);
     }
 
     reader._result = null;
@@ -90,31 +90,31 @@ function initRead(reader, file) {
         return true;
     }
 
-    reader.onloadstart && reader.onloadstart(new ProgressEvent("loadstart", {target:reader}));
+    reader.onloadstart && reader.onloadstart(new ProgressEvent('loadstart', { target:reader }));
 }
 
 /**
  * Abort reading file.
  */
-FileReader.prototype.abort = function() {
+FileReader.prototype.abort = function () {
     if (origFileReader && !this._localURL) {
         return this._realReader.abort();
     }
     this._result = null;
 
     if (this._readyState == FileReader.DONE || this._readyState == FileReader.EMPTY) {
-      return;
+        return;
     }
 
     this._readyState = FileReader.DONE;
 
     // If abort callback
     if (typeof this.onabort === 'function') {
-        this.onabort(new ProgressEvent('abort', {target:this}));
+        this.onabort(new ProgressEvent('abort', { target:this }));
     }
     // If load end callback
     if (typeof this.onloadend === 'function') {
-        this.onloadend(new ProgressEvent('loadend', {target:this}));
+        this.onloadend(new ProgressEvent('loadend', { target:this }));
     }
 };
 
@@ -124,20 +124,20 @@ FileReader.prototype.abort = function() {
  * @param file          {File} File object containing file properties
  * @param encoding      [Optional] (see http://www.iana.org/assignments/character-sets)
  */
-FileReader.prototype.readAsText = function(file, encoding) {
+FileReader.prototype.readAsText = function (file, encoding) {
     if (initRead(this, file)) {
         return this._realReader.readAsText(file, encoding);
     }
 
     // Default encoding is UTF-8
-    var enc = encoding ? encoding : "UTF-8";
-    var me = this;
-    var execArgs = [this._localURL, enc, file.start, file.end];
+    const enc = encoding || 'UTF-8';
+    const me = this;
+    const execArgs = [this._localURL, enc, file.start, file.end];
 
     // Read file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -150,17 +150,17 @@ FileReader.prototype.readAsText = function(file, encoding) {
             me._result = r;
 
             // If onload callback
-            if (typeof me.onload === "function") {
-                me.onload(new ProgressEvent("load", {target:me}));
+            if (typeof me.onload === 'function') {
+                me.onload(new ProgressEvent('load', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -176,17 +176,16 @@ FileReader.prototype.readAsText = function(file, encoding) {
             me._error = new FileError(e);
 
             // If onerror callback
-            if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {target:me}));
+            if (typeof me.onerror === 'function') {
+                me.onerror(new ProgressEvent('error', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
-        }, "File", "readAsText", execArgs);
+        }, 'File', 'readAsText', execArgs);
 };
-
 
 /**
  * Read file and return data as a base64 encoded data url.
@@ -195,18 +194,18 @@ FileReader.prototype.readAsText = function(file, encoding) {
  *
  * @param file          {File} File object containing file properties
  */
-FileReader.prototype.readAsDataURL = function(file) {
+FileReader.prototype.readAsDataURL = function (file) {
     if (initRead(this, file)) {
         return this._realReader.readAsDataURL(file);
     }
 
-    var me = this;
-    var execArgs = [this._localURL, file.start, file.end];
+    const me = this;
+    const execArgs = [this._localURL, file.start, file.end];
 
     // Read file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -219,17 +218,17 @@ FileReader.prototype.readAsDataURL = function(file) {
             me._result = r;
 
             // If onload callback
-            if (typeof me.onload === "function") {
-                me.onload(new ProgressEvent("load", {target:me}));
+            if (typeof me.onload === 'function') {
+                me.onload(new ProgressEvent('load', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -244,15 +243,15 @@ FileReader.prototype.readAsDataURL = function(file) {
             me._error = new FileError(e);
 
             // If onerror callback
-            if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {target:me}));
+            if (typeof me.onerror === 'function') {
+                me.onerror(new ProgressEvent('error', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
-        }, "File", "readAsDataURL", execArgs);
+        }, 'File', 'readAsDataURL', execArgs);
 };
 
 /**
@@ -260,18 +259,18 @@ FileReader.prototype.readAsDataURL = function(file) {
  *
  * @param file          {File} File object containing file properties
  */
-FileReader.prototype.readAsBinaryString = function(file) {
+FileReader.prototype.readAsBinaryString = function (file) {
     if (initRead(this, file)) {
         return this._realReader.readAsBinaryString(file);
     }
 
-    var me = this;
-    var execArgs = [this._localURL, file.start, file.end];
+    const me = this;
+    const execArgs = [this._localURL, file.start, file.end];
 
     // Read file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -283,17 +282,17 @@ FileReader.prototype.readAsBinaryString = function(file) {
             me._result = r;
 
             // If onload callback
-            if (typeof me.onload === "function") {
-                me.onload(new ProgressEvent("load", {target:me}));
+            if (typeof me.onload === 'function') {
+                me.onload(new ProgressEvent('load', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -308,15 +307,15 @@ FileReader.prototype.readAsBinaryString = function(file) {
             me._error = new FileError(e);
 
             // If onerror callback
-            if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {target:me}));
+            if (typeof me.onerror === 'function') {
+                me.onerror(new ProgressEvent('error', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
-        }, "File", "readAsBinaryString", execArgs);
+        }, 'File', 'readAsBinaryString', execArgs);
 };
 
 /**
@@ -324,18 +323,18 @@ FileReader.prototype.readAsBinaryString = function(file) {
  *
  * @param file          {File} File object containing file properties
  */
-FileReader.prototype.readAsArrayBuffer = function(file) {
+FileReader.prototype.readAsArrayBuffer = function (file) {
     if (initRead(this, file)) {
         return this._realReader.readAsArrayBuffer(file);
     }
 
-    var me = this;
-    var execArgs = [this._localURL, file.start, file.end];
+    const me = this;
+    const execArgs = [this._localURL, file.start, file.end];
 
     // Read file
     exec(
         // Success callback
-        function(r) {
+        function (r) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -350,17 +349,17 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
             me._result = r;
 
             // If onload callback
-            if (typeof me.onload === "function") {
-                me.onload(new ProgressEvent("load", {target:me}));
+            if (typeof me.onload === 'function') {
+                me.onload(new ProgressEvent('load', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
         },
         // Error callback
-        function(e) {
+        function (e) {
             // If DONE (cancelled), then don't do anything
             if (me._readyState === FileReader.DONE) {
                 return;
@@ -375,15 +374,15 @@ FileReader.prototype.readAsArrayBuffer = function(file) {
             me._error = new FileError(e);
 
             // If onerror callback
-            if (typeof me.onerror === "function") {
-                me.onerror(new ProgressEvent("error", {target:me}));
+            if (typeof me.onerror === 'function') {
+                me.onerror(new ProgressEvent('error', { target:me }));
             }
 
             // If onloadend callback
-            if (typeof me.onloadend === "function") {
-                me.onloadend(new ProgressEvent("loadend", {target:me}));
+            if (typeof me.onloadend === 'function') {
+                me.onloadend(new ProgressEvent('loadend', { target:me }));
             }
-        }, "File", "readAsArrayBuffer", execArgs);
+        }, 'File', 'readAsArrayBuffer', execArgs);
 };
 
 module.exports = FileReader;

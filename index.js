@@ -6,14 +6,14 @@
 */
 'use strict';
 
-var requestFileSystem = require('./libs/requestFileSystem');
-var LocalFileSystem = require('./libs/LocalFileSystem');
-var FileReader = require('./libs/FileReader');
-var fileSystemPaths = require('./libs/fileSystemPaths');
+const requestFileSystem = require('./libs/requestFileSystem');
+const LocalFileSystem = require('./libs/LocalFileSystem');
+const FileReader = require('./libs/FileReader');
+const fileSystemPaths = require('./libs/fileSystemPaths');
 
 module.exports = {
     requestFileSystem: requestFileSystem,
     LocalFileSystem: LocalFileSystem,
     FileReader: FileReader,
     fileSystemPaths: fileSystemPaths,
-}
+};

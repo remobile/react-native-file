@@ -19,13 +19,12 @@
  *
 */
 
-
-var DirectoryEntry = require('./DirectoryEntry');
-var React = require('react-native');
-var {
+const DirectoryEntry = require('./DirectoryEntry');
+const React = require('react-native');
+const {
     Platform,
 } = React;
-var FILESYSTEM_PROTOCOL = "cdvfile";
+const FILESYSTEM_PROTOCOL = 'cdvfile';
 
 /**
  * An interface representing a file system
@@ -34,7 +33,7 @@ var FILESYSTEM_PROTOCOL = "cdvfile";
  * {DOMString} name the unique name of the file system (readonly)
  * {DirectoryEntry} root directory of the file system (readonly)
  */
-var FileSystem = function(name, root) {
+const FileSystem = function (name, root) {
     this.name = name;
     if (root) {
         this.root = new DirectoryEntry(root.name, root.fullPath, this, root.nativeURL);
@@ -43,24 +42,24 @@ var FileSystem = function(name, root) {
     }
 };
 
-FileSystem.prototype.__format__ = function(fullPath, nativeUrl) {
-    if (Platform.OS==="android") {
-        var path = '/' + this.name + '/' + encodeURI(fullPath);
-        path = path.replace('//','/');
-        var ret = FILESYSTEM_PROTOCOL + '://localhost' + path;
-        var m = /\?.*/.exec(nativeUrl);
+FileSystem.prototype.__format__ = function (fullPath, nativeUrl) {
+    if (Platform.OS === 'android') {
+        let path = '/' + this.name + '/' + encodeURI(fullPath);
+        path = path.replace('//', '/');
+        let ret = FILESYSTEM_PROTOCOL + '://localhost' + path;
+        const m = /\?.*/.exec(nativeUrl);
         if (m) {
-          ret += m[0];
+            ret += m[0];
         }
         return ret;
     } else {
-        var path = ('/'+this.name+(fullPath[0]==='/'?'':'/')+encodeURI(fullPath)).replace('//','/');
+        const path = ('/' + this.name + (fullPath[0] === '/' ? '' : '/') + encodeURI(fullPath)).replace('//', '/');
         return FILESYSTEM_PROTOCOL + '://localhost' + path;
     }
 };
 
-FileSystem.prototype.toJSON = function() {
-    return "<FileSystem: " + this.name + ">";
+FileSystem.prototype.toJSON = function () {
+    return '<FileSystem: ' + this.name + '>';
 };
 
 module.exports = FileSystem;
