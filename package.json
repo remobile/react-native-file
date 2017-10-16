@@ -1,6 +1,6 @@
 {
     "name": "@remobile/react-native-file",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "description": "A cordova file for react-native, supprt for ios and android",
         "main": "index.js",
         "author": {
